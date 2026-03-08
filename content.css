@@ -1,0 +1,48 @@
+/* ClipMind v3 — Clear & Readable Design */
+
+/* ── DRAG OVERLAY ── */
+#ycs-overlay{position:absolute;top:0;left:0;right:0;bottom:0;z-index:99999;cursor:crosshair;}
+.html5-video-player>#ycs-overlay,#movie_player>#ycs-overlay{position:absolute;top:0;left:0;right:0;bottom:0;z-index:99999;cursor:crosshair;pointer-events:auto;}
+#ycs-sel-fill{display:none;position:absolute;top:0;bottom:0;background:rgba(139,92,246,.25);border-left:2px solid #8b5cf6;border-right:2px solid #8b5cf6;pointer-events:none;}
+.ycs-h{display:none;position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;background:#fff;border:2.5px solid #8b5cf6;border-radius:50%;pointer-events:none;}
+.ycs-lbl{display:none;position:absolute;bottom:calc(100%+6px);transform:translateX(-50%);background:rgba(10,10,18,.95);color:#e2e8f0;font-size:11px;padding:3px 8px;border-radius:5px;pointer-events:none;}
+#ycs-hov{display:none;position:absolute;top:calc(100%+5px);transform:translateX(-50%);background:rgba(10,10,18,.85);color:#94a3b8;font-size:10px;padding:2px 6px;border-radius:4px;pointer-events:none;white-space:nowrap;}
+
+/* ── BUTTONS ── */
+#ycs-btn-group{position:absolute;bottom:72px;display:none;align-items:center;gap:7px;z-index:2147483600;}
+#ycs-sum-btn{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:24px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 24px rgba(124,58,237,.5);}
+#ycs-full-btn{background:rgba(0,0,0,.6);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.25);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;}
+
+/* ── PANEL ── */
+#ycs-panel{position:fixed;top:56px;right:-400px;width:360px;height:calc(100vh - 70px);background:#1a1625;border-left:1px solid #2d2640;border-radius:16px 0 0 16px;display:flex;flex-direction:column;z-index:2147483640;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transition:right .3s cubic-bezier(.4,0,.2,1);overflow:hidden;}
+#ycs-panel.ycs-open{right:0;}
+#ycs-panel.ycs-minimized{height:auto!important;}
+#ycs-panel.ycs-minimized #ycs-tabs,#ycs-panel.ycs-minimized .ycs-tab-content,#ycs-panel.ycs-minimized #ycs-settings-bar,#ycs-panel.ycs-minimized #ycs-action-bar,#ycs-panel.ycs-minimized #ycs-usage-bar{display:none!important;}
+
+/* ── HEADER ── */
+#ycs-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 11px;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(79,70,229,.12));border-bottom:1px solid #2d2640;cursor:grab;user-select:none;}
+#ycs-title-bar{font-size:14px;font-weight:800;color:#e2d9f3;letter-spacing:.4px;}
+
+/* ── TABS ── */
+#ycs-tabs{display:flex;background:#13101e;border-bottom:1px solid #2d2640;}
+.ycs-tab{flex:1;padding:11px 0;text-align:center;font-size:11px;font-weight:700;color:#6b6488;cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;letter-spacing:.5px;text-transform:uppercase;}
+.ycs-tab.active{color:#c4b5fd;border-bottom-color:#7c3aed;}
+
+/* ── TAB CONTENT ── */
+.ycs-tab-content{display:none;flex:1;overflow-y:auto;padding:16px;min-height:0;}
+.ycs-tab-content.active{display:flex!important;flex-direction:column;}
+
+/* ── RESULT ── */
+#ycs-res{color:#e2d9f3;font-size:13.5px;line-height:1.85;}
+#ycs-res ul{list-style:none;padding:0;margin:0 0 12px;}
+#ycs-res li{padding:9px 0 9px 22px;position:relative;color:#ddd6ee;border-bottom:1px solid #211c2e;line-height:1.75;}
+#ycs-res li::before{content:'';position:absolute;left:3px;top:17px;width:6px;height:6px;background:#7c3aed;border-radius:50%;}
+#ycs-res blockquote{border-left:3px solid #7c3aed;margin:10px 0;padding:10px 14px;color:#c4b5fd;font-style:italic;background:rgba(124,58,237,.08);border-radius:0 8px 8px 0;}
+.ycs-ts{background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.3);color:#c4b5fd;border-radius:10px;padding:2px 8px;font-size:10.5px;font-weight:700;cursor:pointer;}
+.ycs-spin{width:32px;height:32px;border:2.5px solid #2d2640;border-top-color:#7c3aed;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ycs-hidden{display:none!important;}
+#ycs-action-bar{display:flex;align-items:center;padding:8px 12px;background:#13101e;border-top:1px solid #2d2640;}
+#ycs-usage-bar{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#0f0c18;border-top:1px solid #211c2e;}
+#ycs-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2147483650;align-items:center;justify-content:center;}
+#ycs-modal{background:#1a1625;border:1px solid #2d2640;border-radius:16px;padding:24px;width:320px;}
