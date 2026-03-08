@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>ClipMind</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0f;--card:#13131e;--border:#1e1e2e;--border2:#2a2a3a;
+      --accent:#6366f1;--accent2:#7c3aed;--green:#22c55e;--red:#ef4444;
+      --text:#f0f0f0;--text2:#888;--text3:#444;
+    }
+    body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); width:360px; font-size:13px; }
+    .screen{ display:none; flex-direction:column; min-height:460px; }
+    .screen.active{ display:flex; }
+    .hero{ background:linear-gradient(135deg,#0d0d1a,#13132a); padding:24px 20px 20px; text-align:center; border-bottom:1px solid var(--border); }
+    .hero-icon{ font-size:32px; margin-bottom:8px; }
+    .hero-title{ font-size:16px; font-weight:800; margin-bottom:4px; }
+    .hero-title span{ color:var(--accent); }
+    .hero-sub{ font-size:11px; color:var(--text2); line-height:1.5; }
+    .sec-lbl{ padding:11px 18px 5px; font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.7px; }
+    .step{ display:flex; align-items:flex-start; gap:11px; padding:9px 18px; border-bottom:1px solid var(--border); }
+    .snum{ width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px; }
+    .snum.done{ background:var(--green); }
+    .snum.todo{ background:var(--accent); }
+    .stitle{ font-size:12px; font-weight:600; margin-bottom:3px; }
+    .sdesc{ font-size:11px; color:var(--text2); line-height:1.5; }
+    .sdesc a{ color:var(--accent); text-decoration:none; font-weight:600; }
+    .cost-info{ margin:10px 18px; background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.18); border-radius:9px; padding:10px 13px; font-size:11px; color:#c7d2fe; line-height:1.6; }
+    .key-area{ padding:12px 18px; background:var(--card); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .key-lbl{ font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.7px; margin-bottom:7px; }
+    .key-row{ display:flex; gap:7px; margin-bottom:6px; }
+    .key-input{ flex:1; background:#0d0d14; border:1.5px solid var(--border2); border-radius:8px; color:var(--text); padding:8px 11px; font-size:12px; font-family:'Courier New',monospace; outline:none; transition:border-color .2s; min-width:0; }
+    .key-input:focus{ border-color:var(--accent); }
+    .key-input.valid{ border-color:var(--green); }
+    .key-input.invalid{ border-color:var(--red); }
+    .save-btn{ background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; font-family:inherit; }
+    .key-status{ font-size:11px; min-height:15px; }
+    .key-status.ok{ color:var(--green); }
+    .key-status.err{ color:var(--red); }
+    .privacy{ padding:9px 18px 12px; font-size:10px; color:var(--text3); text-align:center; }
+    .top-bar{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:linear-gradient(135deg,#0d0d1a,#13132a); border-bottom:1px solid var(--border); }
+    .top-left{ display:flex; align-items:center; gap:9px; }
+    .top-icon{ font-size:20px; }
+    .top-title{ font-size:13px; font-weight:700; }
+    .top-sub{ font-size:9px; color:var(--accent); margin-top:1px; }
+    .usage-badge{ background:rgba(99,102,241,.15); border:1px solid rgba(99,102,241,.25); color:#a5b4fc; font-size:10px; font-weight:700; padding:3px 9px; border-radius:12px; }
+    .usage-badge.warn{ background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.25); color:#fca5a5; }
+    .tabs{ display:flex; border-bottom:1px solid var(--border); background:var(--bg); }
+    .tab{ flex:1; padding:9px 0; text-align:center; font-size:11px; font-weight:600; color:var(--text3); cursor:pointer; border-bottom:2px solid transparent; transition:all .15s; }
+    .tab.active{ color:var(--accent); border-bottom-color:var(--accent); }
+    .tab-content{ display:none; flex:1; flex-direction:column; }
+    .tab-content.active{ display:flex; }
+    .status-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 16px; background:var(--card); border-bottom:1px solid var(--border); }
+    .status-left{ display:flex; align-items:center; gap:7px; font-size:11px; color:var(--text2); }
+    .dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .dot.on{ background:var(--green); }
+    .change-btn{ background:none; border:1px solid var(--border2); color:var(--text3); font-size:10px; padding:3px 9px; border-radius:5px; cursor:pointer; font-family:inherit; }
+    .how-lbl{ padding:10px 16px 4px; font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.7px; }
+    .how-item{ display:flex; align-items:center; gap:11px; padding:8px 16px; border-bottom:1px solid var(--border); }
+    .hnum{ width:20px; height:20px; background:var(--border2); border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--accent); flex-shrink:0; }
+    .htext{ font-size:12px; color:var(--text2); }
+    .htext strong{ color:var(--text); }
+    .not-yt{ text-align:center; padding:30px 20px; }
+    .not-yt-icon{ font-size:30px; margin-bottom:10px; }
+    .not-yt p{ font-size:12px; color:var(--text2); margin-bottom:14px; }
+    .yt-btn{ display:inline-block; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; border-radius:18px; padding:9px 22px; font-size:12px; font-weight:700; cursor:pointer; text-decoration:none; font-family:inherit; }
+    .notebook-wrap{ flex:1; overflow-y:auto; }
+    .note-item{ padding:12px 16px; border-bottom:1px solid var(--border); }
+    .note-title{ font-size:12px; font-weight:600; color:var(--text); margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .note-meta{ font-size:10px; color:var(--text3); margin-bottom:5px; }
+    .note-preview{ font-size:11px; color:var(--text2); line-height:1.5; overflow:hidden; }
+    .note-actions{ display:flex; gap:6px; margin-top:7px; }
+    .note-btn{ background:var(--card); border:1px solid var(--border2); color:var(--text2); font-size:10px; padding:3px 9px; border-radius:5px; cursor:pointer; font-family:inherit; }
+    .note-btn.del:hover{ border-color:var(--red); color:var(--red); }
+    .empty-state{ text-align:center; padding:40px 20px; color:var(--text3); font-size:12px; }
+    .empty-state .es-icon{ font-size:32px; margin-bottom:10px; }
+    .settings-wrap{ flex:1; overflow-y:auto; padding:12px 16px; }
+    .set-section{ margin-bottom:16px; }
+    .set-section-title{ font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.7px; margin-bottom:8px; }
+    .set-row{ display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:6px; }
+    .set-row-label{ font-size:12px; color:var(--text2); }
+    .set-row select{ background:var(--bg); border:1px solid var(--border2); color:var(--text); padding:5px 9px; border-radius:6px; font-size:11px; font-family:inherit; outline:none; }
+    .pro-banner{ background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(124,58,237,.1)); border:1px solid rgba(99,102,241,.25); border-radius:10px; padding:14px; margin-bottom:14px; text-align:center; }
+    .pro-banner h4{ color:#a5b4fc; font-size:13px; margin-bottom:6px; }
+    .pro-banner p{ font-size:11px; color:#888; margin-bottom:10px; line-height:1.5; }
+    .pro-btn{ background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; border-radius:8px; padding:8px 18px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+    .footer{ padding:8px 16px; border-top:1px solid var(--border); font-size:10px; color:var(--text3); display:flex; align-items:center; justify-content:space-between; }
+    .footer a{ color:var(--text3); text-decoration:none; }
+    .hidden{ display:none!important; }
+  </style>
+</head>
+<body>
+
+<div class="screen active" id="screenSetup">
+  <div class="hero">
+    <div class="hero-icon">✂️</div>
+    <div class="hero-title"><span>Clip</span>Mind</div>
+    <div class="hero-sub">Drag any part of a video → instant AI summary<br>with bullet points & key takeaways</div>
+  </div>
+  <div class="sec-lbl">Quick Setup — 2 minutes</div>
+  <div class="step"><div class="snum done">✓</div><div><div class="stitle">Install Extension</div><div class="sdesc">Already done ✅</div></div></div>
+  <div class="step">
+    <div class="snum todo">2</div>
+    <div>
+      <div class="stitle">Get your FREE Groq API Key</div>
+      <div class="sdesc">Go to <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> → Sign up free → <strong>Create API Key</strong> → Copy it</div>
+    </div>
+  </div>
+  <div class="cost-info">🆓 <strong>100% Free</strong> — 14,400 requests/day! No credit card needed.</div>
+  <div class="step"><div class="snum todo">3</div><div><div class="stitle">Paste your key below & save</div><div class="sdesc">Your key stays on your device. Never shared with anyone.</div></div></div>
+  <div class="key-area">
+    <div class="key-lbl">🔑 Groq API Key</div>
+    <div class="key-row">
+      <input type="password" class="key-input" id="keyInput" placeholder="gsk_…"/>
+      <button class="save-btn" id="saveBtn">Save →</button>
+    </div>
+    <div class="key-status" id="keyStatus"></div>
+  </div>
+  <div class="privacy"><span>🔒 100% Private</span> — Stored locally on your device only.</div>
+</div>
+
+<div class="screen" id="screenMain">
+  <div class="top-bar">
+    <div class="top-left">
+      <div class="top-icon">✂️</div>
+      <div>
+        <div class="top-title">ClipMind</div>
+        <div class="top-sub">Powered by Groq AI · Free</div>
+      </div>
+    </div>
+    <div class="usage-badge" id="usageBadge">Loading…</div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-tab="home">🏠 Home</div>
+    <div class="tab" data-tab="notebook">📓 Notebook</div>
+    <div class="tab" data-tab="settings">⚙️ Settings</div>
+  </div>
+  <div class="tab-content active" id="tab-home">
+    <div class="status-row">
+      <div class="status-left"><span class="dot on"></span><span id="keyMasked">API key active</span></div>
+      <button class="change-btn" id="changeKeyBtn">Change Key</button>
+    </div>
+    <div id="onYT">
+      <div class="how-lbl">How to use</div>
+      <div class="how-item"><div class="hnum">1</div><div class="htext">Play any YouTube video</div></div>
+      <div class="how-item"><div class="hnum">2</div><div class="htext"><strong>Drag</strong> on the progress bar to select a clip</div></div>
+      <div class="how-item"><div class="hnum">3</div><div class="htext">Click <strong>✨ Summarize</strong> that appears</div></div>
+      <div class="how-item"><div class="hnum">4</div><div class="htext">Choose <strong>language & style</strong> in the panel</div></div>
+      <div class="how-item"><div class="hnum">5</div><div class="htext">Save to <strong>📓 Notebook</strong> or export as <strong>PDF</strong></div></div>
+    </div>
+    <div id="notYT" class="not-yt hidden">
+      <div class="not-yt-icon">🎬</div>
+      <p>Open a YouTube video to start summarizing</p>
+      <a href="https://youtube.com" target="_blank" class="yt-btn">Open YouTube ↗</a>
+    </div>
+  </div>
+  <div class="tab-content" id="tab-notebook">
+    <div class="notebook-wrap" id="notebookList">
+      <div class="empty-state"><div class="es-icon">📓</div><p>No saved summaries yet.</p></div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab-settings">
+    <div class="settings-wrap">
+      <div class="pro-banner">
+        <h4>⚡ Upgrade to Pro — $5/month</h4>
+        <p>Unlimited summaries · All languages · PDF export</p>
+        <button class="pro-btn" onclick="window.open('https://yourdomain.com/upgrade')">Upgrade Now →</button>
+      </div>
+      <div class="set-section">
+        <div class="set-section-title">Default Settings</div>
+        <div class="set-row"><span class="set-row-label">🌍 Language</span><select id="setLang"><option value="english">English</option><option value="bengali">Bengali (বাংলা)</option><option value="arabic">Arabic</option><option value="urdu">Urdu</option><option value="spanish">Spanish</option><option value="french">French</option><option value="hindi">Hindi</option><option value="turkish">Turkish</option></select></div>
+        <div class="set-row"><span class="set-row-label">✏️ Style</span><select id="setStyle"><option value="bullets">• Bullets</option><option value="paragraph">¶ Paragraphs</option><option value="quotes">" Quotes</option><option value="academic">📚 Academic</option></select></div>
+        <div class="set-row"><span class="set-row-label">📏 Length</span><select id="setLength"><option value="short">Short</option><option value="medium">Medium</option><option value="detailed">Detailed</option></select></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>ClipMind v2.1</span>
+    <a href="https://console.groq.com/keys" target="_blank">Get API Key ↗</a>
+  </div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
